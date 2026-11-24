@@ -1,0 +1,18 @@
+services:
+  mongo:
+    image: mongo:7
+    volumes: [mongodata:/data/db]
+  backend:
+    build: ./backend
+    environment:
+      MONGO_URI: mongodb://mongo:27017/hospital
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+      CORS_ORIGIN: http://localhost:8080
+    depends_on: [mongo]
+    ports: ["5000:5000"]
+  frontend:
+    build: ./frontend
+    ports: ["8080:80"]
+    depends_on: [backend]
+volumes:
+  mongodata:
